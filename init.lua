@@ -102,6 +102,10 @@ end, { desc = 'Flash jump (T)' })
 require('nvim-surround')
 -------------------
 
+------------------- Lualine
+require('lualine').setup()
+-------------------
+
 --- Custom configuration
 vim.cmd [[colorscheme gruvbox-material]]
 vim.cmd [[set nu]]
@@ -109,6 +113,7 @@ vim.cmd [[set rnu]]
 vim.cmd [[nnoremap <silent> <cr> :noh<cr><cr>]]
 vim.cmd [[set autoindent]]
 vim.cmd [[set smartindent]]
+vim.cmd [[set clipboard+=unnamedplus]]
 vim.o.tabstop = 4 -- A TAB character looks like 4 spaces
 vim.o.expandtab = true -- TAB key will insert spaces instead of a TAB character
 vim.o.softtabstop = 4 -- Number of spaces inserted instead of a TAB character
@@ -120,3 +125,92 @@ vim.keymap.set("n", "<C-n>", ":NvimTreeOpen<Enter>")
 vim.keymap.set("n", "G", "Gzz")
 vim.keymap.set("n", "j", "gj")
 vim.keymap.set("n", "k", "gk")
+
+vim.g.mapleader = " "
+
+local builtin = require('telescope.builtin')
+vim.keymap.set('n', '<leader>ff', builtin.find_files, { desc = 'Telescope find files' })
+vim.keymap.set('n', '<leader>fg', builtin.live_grep, { desc = 'Telescope live grep' })
+vim.keymap.set('n', '<leader>fb', builtin.buffers, { desc = 'Telescope buffers' })
+vim.keymap.set('n', '<leader>fh', builtin.help_tags, { desc = 'Telescope help tags' })
+
+local NS = { noremap = true, silent = true }
+
+-- Aligns to 1 character
+vim.keymap.set(
+    'x',
+    'aa',
+    function()
+        require'align'.align_to_char({
+            length = 1,
+        })
+    end,
+    NS
+)
+
+-- Aligns to 2 characters with previews
+vim.keymap.set(
+    'x',
+    'ad',
+    function()
+        require'align'.align_to_char({
+            preview = true,
+            length = 2,
+        })
+    end,
+    NS
+)
+
+-- Aligns to a string with previews
+vim.keymap.set(
+    'x',
+    'aw',
+    function()
+        require'align'.align_to_string({
+            preview = true,
+            regex = false,
+        })
+    end,
+    NS
+)
+
+-- Aligns to a Vim regex with previews
+vim.keymap.set(
+    'x',
+    'ar',
+    function()
+        require'align'.align_to_string({
+            preview = true,
+            regex = true,
+        })
+    end,
+    NS
+)
+
+-- Example gawip to align a paragraph to a string with previews
+vim.keymap.set(
+    'n',
+    'gaw',
+    function()
+        local a = require'align'
+        a.operator(
+            a.align_to_string,
+            {
+                regex = false,
+                preview = true,
+            }
+        )
+    end,
+    NS
+)
+
+-- Example gaaip to align a paragraph to 1 character
+vim.keymap.set(
+    'n',
+    'gaa',
+    function()
+        local a = require'align'
+        a.operator(a.align_to_char)
+    end,
+    NS
+)
